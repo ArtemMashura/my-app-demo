@@ -19,7 +19,10 @@ export default function CreateBoardModal({createBoardModalVisible, setCreateBoar
     };
 
     const handleCreateBoard = async () => {
-        if (!isLockedOut) {
+        if (tableName === '') {
+            return
+        }
+        else if (!isLockedOut) {
             setIsLockedOut(true)
             const res = await BoardService.postCreateBoard({
                 name: tableName
@@ -55,7 +58,7 @@ export default function CreateBoardModal({createBoardModalVisible, setCreateBoar
                     <text className="paramName">Board name</text>
                     <input className='paramInput' onChange={e => setTableName(e.target.value)} value={tableName} placeholder='Enter board name'></input>
                     <div className={
-                        isLockedOut ? "createBoardBtnLockedOut" : "createBoardBtn"
+                        isLockedOut || tableName === "" ? "createBoardBtnLockedOut" : "createBoardBtn"
                     } onClick={handleCreateBoard}>
                         <text className="createBoardBtnText">Create board</text>
                     </div>

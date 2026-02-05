@@ -1,4 +1,4 @@
-import type { Board, TRequest } from '../types';
+import type { Board, TRequest } from '../../types';
 
 type TResponse = {
     boards: Board[]

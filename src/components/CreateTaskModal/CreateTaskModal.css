@@ -53,10 +53,11 @@ body.active-modal {
     cursor: default;
 }
 
-.paramInput {
+.taskParamInput {
   padding-left: 10px;
   padding-top: 10px;
   padding-bottom: 10px;
+  margin-bottom: 5px;
   max-width: 66%;
 }
 
@@ -92,7 +93,7 @@ body.active-modal {
     margin-bottom: 5px;
 }
 
-.applyChangesBtn, .applyChangesBtnLockedOut {
+.createBoardBtn, .createBoardBtnLockedOut {
     display: flex;
     cursor: pointer;
     background-color: rgb(25, 196, 25);
@@ -101,12 +102,13 @@ body.active-modal {
     justify-content: center;
 }
 
-.applyChangesBtnLockedOut {
+.createBoardBtnLockedOut {
     opacity: 0.5;
     cursor: default;
+
 }
 
-.applyChangesBtnText {
+.createBoardBtnText {
     font-size: 18px;
     padding: 5px 0px;
 }

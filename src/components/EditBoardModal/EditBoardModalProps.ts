@@ -1,4 +1,4 @@
-import type { Board } from "../../services/board/types"
+import type { Board } from "../../services/types"
 
 export type ModalProps ={
     editBoardModalVisible: boolean,

@@ -30,7 +30,10 @@ export default function EditBoardModal({editBoardModalVisible, setEditBoardModal
     }
 
     const handlePatchBoard = async () => {
-        if (!isLockedOut) {
+        if (tableName === '') {
+            return
+        }
+        else if (!isLockedOut) {
             if (editBoardModalBoard?.id) {
                     setIsLockedOut(true)
                     const res = await BoardService.patchUpdateBoard(editBoardModalBoard?.id, { // це краще робити через форм дату
@@ -74,7 +77,7 @@ export default function EditBoardModal({editBoardModalVisible, setEditBoardModal
                     <text className="paramName">Board name</text>
                     <input className='paramInput' onChange={e => setTableName(e.target.value)} value={tableName} placeholder='Enter board name'></input>
                     <div className={
-                        isLockedOut ? "applyChangesBtnLockedOut" : "applyChangesBtn"
+                        isLockedOut || tableName === "" ? "applyChangesBtnLockedOut" : "applyChangesBtn"
                     } onClick={handlePatchBoard}>
                         <text className="applyChangesBtnText">Edit board</text>
                     </div>

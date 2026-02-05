@@ -92,21 +92,22 @@ body.active-modal {
     margin-bottom: 5px;
 }
 
-.applyChangesBtn, .applyChangesBtnLockedOut {
+.deleteBoardBtn, .deleteBoardBtnLockedOut {
     display: flex;
     cursor: pointer;
-    background-color: rgb(25, 196, 25);
+    background-color: rgb(255, 31, 31);
     margin-top: 15px;
     border-radius: 5px;
     justify-content: center;
 }
 
-.applyChangesBtnLockedOut {
+.deleteBoardBtnLockedOut {
     opacity: 0.5;
     cursor: default;
+
 }
 
-.applyChangesBtnText {
+.deleteBoardBtnText {
     font-size: 18px;
     padding: 5px 0px;
 }

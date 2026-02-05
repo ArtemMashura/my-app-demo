@@ -25,5 +25,5 @@ export type Task = {
     description?: string,
     boardId: string,
     taskProgress: "ToDo" | "InProgress" | "Done"
-    orderInBoard: number
+    orderInTable: string
 }

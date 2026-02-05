@@ -5,7 +5,7 @@ import type { RootState } from '../../store/store';
 import { BoardService } from '../../services/board/board.service';
 import { setBoards } from '../../store/Boards';
 import CreateBoardModal from '../../components/CreateBoardModal/CreateBoardModal';
-import type { Board } from '../../services/board/types';
+import type { Board } from '../../services/types';
 import EditBoardModal from '../../components/EditBoardModal/EditBoardModal';
 import DeleteBoardModal from '../../components/DeleteBoardModal/DeleteBoardModal';
 import { Link } from 'react-router-dom';
@@ -76,15 +76,17 @@ export function Home() {
                 <div className='boardContainer' key={boardToRender.id}>
                     <text className='tableName'>{boardToRender.name}</text>
                     <div className='controls'>
-                    <img className='editBtn' width={25} height={25} src={'./src/assets/edit-tool-pencil.svg'} onClick={() => {
+                      <img className='editBtn' width={25} height={25} src={'./src/assets/edit-tool-pencil.svg'} onClick={(event) => {
+                        event.preventDefault()
                         setEditBoardModalBoard(boardToRender)
                         setIsEditBoardModalVisible(true)
-                    }}></img>
-                    <p></p>
-                    <img className='deleteBtn' width={25} height={25} src={'./src/assets/delete-button.svg'} onClick={() => {
+                      }}></img>
+                      <p></p>
+                      <img className='deleteBtn' width={25} height={25} src={'./src/assets/delete-button.svg'} onClick={(event) => {
+                        event.preventDefault()
                         setDeleteBoardModalBoardID(boardToRender.id)
                         setIsDeleteBoardModalVisible(true)
-                    }}></img>
+                      }}></img>
                     </div>
                 </div>
 
