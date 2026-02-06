@@ -6,7 +6,26 @@ import type { Board, Task } from "../../services/types";
 import CreateTaskModal from "../../components/CreateTaskModal/CreateTaskModal";
 import EditTaskModal from "../../components/EditTaskModal/EditTaskModal";
 import DeleteTaskModal from "../../components/DeleteTaskModal/DeleteTaskModal";
+import type { DragEvent } from "react";
 
+// import type {
+//   Announcements,
+//   DndContextProps,
+//   DragEndEvent,
+//   DragOverEvent,
+//   DragStartEvent,
+// } from "@dnd-kit/core"
+// import {
+//   closestCenter,
+//   DndContext,
+//   DragOverlay,
+//   KeyboardSensor,
+//   MouseSensor,
+//   TouchSensor,
+//   useDroppable,
+//   useSensor,
+//   useSensors,
+// } from "@dnd-kit/core"
 
 export function BoardPage() {
   const { id } = useParams();
@@ -26,6 +45,258 @@ export function BoardPage() {
 
   const [deleteTaskModalTaskID, setDeleteTaskModalTaskID] = useState('')
   const [isDeleteTaskModalVisible, setIsDeleteTaskModalVisible] = useState(false)
+
+  const [currentBoard, setCurrentBoard] = useState<Task[]>()
+  const [currentItem, setCurrentItem] = useState<Task>()
+
+  const dragOverHandler = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    if (e.target instanceof Element) {
+      if (e.target.className === 'taskContainer' || e.target.className === 'categoryContainer') {
+        e.currentTarget.style.boxShadow = '0 2px 3px gray'
+      }
+
+    }
+  }
+
+  const dragLeaveHandler = (e: DragEvent<HTMLDivElement>) => {
+    if (e.target instanceof Element) {
+      if (e.target.className === 'taskContainer' || e.target.className === 'categoryContainer') {
+        e.currentTarget.style.boxShadow = 'none'
+      }
+    }
+  }
+
+  const dragStartHandler = (e: DragEvent<HTMLDivElement>, board:Task[], item:Task) => {
+    setCurrentBoard(board)
+    setCurrentItem(item)
+  }
+
+  const dragEndHandler = (e: DragEvent<HTMLDivElement>) => {
+    if (e.target instanceof Element) {
+      if (e.target.className === 'taskContainer' || e.target.className === 'categoryContainer') {
+        e.currentTarget.style.boxShadow = 'none' 
+      }
+    }
+  }
+
+  const dropHandler = (e: DragEvent<HTMLDivElement>,  board:Task[], item:Task) => {
+    e.preventDefault()
+    if (currentBoard && currentItem) {
+      const currentIndex = currentBoard.indexOf(currentItem)
+      currentBoard.splice(currentIndex, 1)
+
+      
+      const dropIndex = board.indexOf(item)
+      let newVal: number = 0.5
+
+      if (board.length === 1) {
+        if (dropIndex === 0) {
+          newVal = Number(board[1].orderInTable) / 2 
+        }
+        if (dropIndex === 1) {
+          newVal = (Number(board[0].orderInTable) + 1) / 2
+        }
+      }
+      else { 
+        console.log("2 or more members")
+        newVal = (Number(board[dropIndex].orderInTable) + Number(board[dropIndex+1].orderInTable)) / 2
+      }
+
+      let currentItemOldBoard = currentItem.taskProgress
+
+      // setCurrentItem({
+      //   ...currentItem,
+      //   orderInTable: newVal.toString(),
+      //   taskProgress: item.taskProgress
+      // })
+ 
+      let tempItem = {
+        ...currentItem,
+        orderInTable: newVal.toString(),
+        taskProgress: item.taskProgress
+      }
+
+      console.log(tempItem)
+
+      board.splice(dropIndex + 1, 0, tempItem)
+
+      switch (currentItemOldBoard) {
+        case "ToDo":
+          setToDoTasks(currentBoard)
+          break
+        case "InProgress":
+          setInProgressTasks(currentBoard)
+          break
+        case "Done":
+          setDoneTasks(currentBoard)
+          break
+      }
+
+      switch (item.taskProgress) {
+        case "ToDo":
+          setToDoTasks(board)
+          break
+        case "InProgress":
+          setInProgressTasks(board)
+          break
+        case "Done":
+          setDoneTasks(board)
+          break
+      }
+    }
+    if (e.target instanceof Element) {
+      if (e.target.className === 'taskContainer' || e.target.className === 'categoryContainer') {
+        e.currentTarget.style.boxShadow = 'none'
+      }
+    }
+  }
+
+  const dropCardHandler = (e: DragEvent<HTMLDivElement>,  board:Task[], boardTaskProgress: "ToDo" | "InProgress" | "Done") => {
+    if (board.length === 0) {
+      if (currentBoard && currentItem) {
+        const currentIndex = currentBoard.indexOf(currentItem)
+        currentBoard.splice(currentIndex, 1)
+  
+        const currentItemOldBoard = currentItem.taskProgress
+  
+        const tempItem = {
+          ...currentItem,
+          orderInTable: '0.5',
+          taskProgress: boardTaskProgress
+        }
+  
+        console.log(tempItem)
+  
+        const tempBoard: Task[] = [tempItem]
+  
+        switch (currentItemOldBoard) {
+          case "ToDo":
+            setToDoTasks(currentBoard)
+            break  
+          case "InProgress":
+            setInProgressTasks(currentBoard)
+            break
+          case "Done":
+            setDoneTasks(currentBoard)
+            break
+        }
+  
+        switch (boardTaskProgress) {
+          case "ToDo":
+            console.log("inserting into empty ToDo")
+            setToDoTasks(tempBoard)
+            break
+          case "InProgress":
+            console.log("inserting into empty InProgress")
+            setInProgressTasks(tempBoard)
+            break
+          case "Done":
+            console.log("inserting into empty Done")
+            setDoneTasks(tempBoard) 
+            break
+        }
+      }
+      if (e.target instanceof Element) {
+        if (e.target.className === 'taskContainer' || e.target.className === 'categoryContainer') {
+          e.currentTarget.style.boxShadow = 'none'
+        }
+      }
+
+    }
+  }
+
+  // const [activeCardId, setActiveCardId] = useState<string | null>(null)
+  // const [activeCardIdCurrentTaskProgress, setActiveCardIdCurrentTaskProgress] = useState<"ToDo" | "InProgress" | "Done" | null>(null)
+
+  // const sensors = useSensors(
+  //   useSensor(MouseSensor),
+  //   useSensor(TouchSensor),
+  //   useSensor(KeyboardSensor),
+  // )
+
+  // const handleDragStart = (event: DragStartEvent) => {
+  //   setActiveCardId(event.active.id as string)
+  //   setActiveCardIdCurrentTaskProgress(event.active.data)
+  // }
+
+  // // const handleDragOver = (event: DragOverEvent) => {
+  // //   const { active, over } = event
+
+  // //   if (!over) {
+  // //     return
+  // //   }
+
+  // //   const activeItem = data.find(item => item.id === active.id)
+  // //   const overItem = data.find(item => item.id === over.id)
+
+  // //   if (!activeItem) {
+  // //     return
+  // //   }
+
+  // //   const activeColumn = activeItem.column
+  // //   const overColumn =
+  // //     overItem?.column || columns.find(col => col.id === over.id)?.id || columns[0]?.id
+
+  // //   if (activeColumn !== overColumn) {
+  // //     let newData = [...data]
+  // //     const activeIndex = newData.findIndex(item => item.id === active.id)
+  // //     const overIndex = newData.findIndex(item => item.id === over.id)
+
+  // //     newData[activeIndex].column = overColumn
+  // //     newData = arrayMove(newData, activeIndex, overIndex)
+
+  // //     onDataChange?.(newData)
+  // //   }
+
+  // //   onDragOver?.(event)
+  // // }
+
+  // const handleDragEnd = (event: DragEndEvent) => {
+  //   setActiveCardId(null)
+
+  //   onDragEnd?.(event)
+
+  //   const { active, over } = event
+
+  //   if (!over || active.id === over.id) {
+  //     return
+  //   }
+
+  //   let newData = [...data]
+
+  //   const oldIndex = newData.findIndex(item => item.id === active.id)
+  //   const newIndex = newData.findIndex(item => item.id === over.id)
+
+  //   // newData = arrayMove(newData, oldIndex, newIndex)
+
+  //   // onDataChange?.(newData)
+  // }
+
+  // const announcements: Announcements = {
+  //   onDragStart({ active }) {
+  //     const { name, column } = data.find(item => item.id === active.id) ?? {}
+
+  //     return `Picked up the card "${name}" from the "${column}" column`
+  //   },
+  //   onDragOver({ active, over }) {
+  //     const { name } = data.find(item => item.id === active.id) ?? {}
+  //     const newColumn = columns.find(column => column.id === over?.id)?.name
+
+  //     return `Dragged the card "${name}" over the "${newColumn}" column`
+  //   },
+  //   onDragEnd({ active, over }) {
+  //     const { name } = data.find(item => item.id === active.id) ?? {}
+  //     const newColumn = columns.find(column => column.id === over?.id)?.name
+
+  //     return `Dropped the card "${name}" into the "${newColumn}" column`
+  //   },
+  //   onDragCancel({ active }) {
+  //     const { name } = data.find(item => item.id === active.id) ?? {}
+
+  //     return `Cancelled dragging the card "${name}"`
+  //   },
+  // }
 
   const pushNewTaskIntoToDoTasksArray = (newTask: Task) => {
     setToDoTasks([
@@ -126,13 +397,13 @@ export function BoardPage() {
                   break
               }
             });
-            toDoTemp.sort((a,b) => a.orderInTable - b.orderInTable);
+            toDoTemp.sort((a,b) => Number(a.orderInTable) - Number(b.orderInTable));
             setToDoTasks(toDoTemp)
 
-            inProgressTemp.sort((a,b) => a.orderInTable - b.orderInTable);
+            inProgressTemp.sort((a,b) => Number(a.orderInTable) - Number(b.orderInTable));
             setInProgressTasks(inProgressTemp)
 
-            doneTemp.sort((a,b) => a.orderInTable - b.orderInTable);
+            doneTemp.sort((a,b) => Number(a.orderInTable) - Number(b.orderInTable));
             setDoneTasks(doneTemp)
           }
         }
@@ -193,14 +464,25 @@ export function BoardPage() {
               <div className='categories'>
                 <div className="taskColumn">
                   <text className='categoryName'>To Do</text>
-                  <div className='categoryContainer'>
+                  <div className='categoryContainer'  
+                  onDragOver={(e) => dragOverHandler(e)}
+                  onDragLeave={(e) => dragLeaveHandler(e)}
+                  onDrop={(e) => dropCardHandler(e, toDoTasks, "ToDo")}>
                     {toDoTasks.map((task) => (
                       <>
-                        <div className="taskContainer">
+                        <div className="taskContainer"
+                        draggable={true}
+                        onDragOver={(e) => dragOverHandler(e)}
+                        onDragLeave={(e) => dragLeaveHandler(e)}
+                        onDragStart={(e) => dragStartHandler(e, toDoTasks, task)}
+                        onDragEnd={(e) => dragEndHandler(e)}
+                        onDrop={(e) => dropHandler(e, toDoTasks, task)}
+                        >
                           <div className="nameColumn" key={task.id}>
                             <text className="taskName">{task.title}</text>
                             <text className="taskDescription">{task?.description}</text>
                             <text className="taskName">{task.orderInTable}</text>
+                            <text className="taskName">{task.taskProgress}</text>
                           </div>
                           <div className='taskControls'>
                             <img className='editBtn' width={25} height={25} src={'./src/assets/edit-tool-pencil.svg'} onClick={() => {
@@ -228,16 +510,89 @@ export function BoardPage() {
   
                 <div className="taskColumn">
                   <text className='categoryName'>In Progress</text>
-                  <div className='categoryContainer'>
+                  <div className='categoryContainer'
+                  onDragOver={(e) => dragOverHandler(e)}
+                  onDragLeave={(e) => dragLeaveHandler(e)}
+                  onDrop={(e) => dropCardHandler(e, inProgressTasks, "InProgress")}
+                  >
                     
+                    {inProgressTasks.map((task) => (
+                      <>
+                        <div className="taskContainer" 
+                        draggable={true}
+                        onDragOver={(e) => dragOverHandler(e)}
+                        onDragLeave={(e) => dragLeaveHandler(e)}
+                        onDragStart={(e) => dragStartHandler(e, inProgressTasks, task)}
+                        onDragEnd={(e) => dragEndHandler(e)}
+                        onDrop={(e) => dropHandler(e, inProgressTasks, task)}
+                        >
+                          <div className="nameColumn" key={task.id}>
+                            <text className="taskName">{task.title}</text>
+                            <text className="taskDescription">{task?.description}</text>
+                            <text className="taskName">{task.orderInTable}</text>
+                            <text className="taskName">{task.taskProgress}</text>
+                          </div>
+                          <div className='taskControls'>
+                            <img className='editBtn' width={25} height={25} src={'./src/assets/edit-tool-pencil.svg'} onClick={() => {
+                              setEditTaskModalTask(task)
+                              setIsEditTaskModalVisible(true)
+                            }}></img>
+                            <p></p>
+                            <img className='deleteBtn' width={25} height={25} src={'./src/assets/delete-button.svg'} onClick={() => {
+                              setDeleteTaskModalTaskID(task.id)
+                              setIsDeleteTaskModalVisible(true)
+                            }}></img>
+                          </div>
+                          
+                        </div>
+
+                      
+                      </>
+                    ))}
                   </div>
   
                 </div>
   
                 <div className="taskColumn">
                   <text className='categoryName'>Done</text>
-                  <div className='categoryContainer'>
-                    
+                  <div className='categoryContainer'
+                  onDragOver={(e) => dragOverHandler(e)}
+                  onDragLeave={(e) => dragLeaveHandler(e)}
+                  onDrop={(e) => dropCardHandler(e, doneTasks, "Done")}
+                  >
+                    {doneTasks.map((task) => (
+                      <>
+                        <div className="taskContainer" 
+                        draggable={true}
+                        onDragOver={(e) => dragOverHandler(e)}
+                        onDragLeave={(e) => dragLeaveHandler(e)}
+                        onDragStart={(e) => dragStartHandler(e, inProgressTasks, task)}
+                        onDragEnd={(e) => dragEndHandler(e)}
+                        onDrop={(e) => dropHandler(e, inProgressTasks, task)}
+                        >
+                          <div className="nameColumn" key={task.id}>
+                            <text className="taskName">{task.title}</text>
+                            <text className="taskDescription">{task?.description}</text>
+                            <text className="taskName">{task.orderInTable}</text>
+                            <text className="taskName">{task.taskProgress}</text>
+                          </div>
+                          <div className='taskControls'>
+                            <img className='editBtn' width={25} height={25} src={'./src/assets/edit-tool-pencil.svg'} onClick={() => {
+                              setEditTaskModalTask(task)
+                              setIsEditTaskModalVisible(true)
+                            }}></img>
+                            <p></p>
+                            <img className='deleteBtn' width={25} height={25} src={'./src/assets/delete-button.svg'} onClick={() => {
+                              setDeleteTaskModalTaskID(task.id)
+                              setIsDeleteTaskModalVisible(true)
+                            }}></img>
+                          </div>
+                          
+                        </div>
+
+                      
+                      </>
+                    ))}
                   </div>
   
                 </div>
