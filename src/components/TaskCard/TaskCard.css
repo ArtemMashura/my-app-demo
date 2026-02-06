@@ -1,0 +1,49 @@
+
+.taskContainer, .taskContainerSelected {
+  background-color: rgb(199, 199, 199);
+  flex: 0 1 100px;
+  margin-top: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  cursor: grab;
+}
+
+.taskContainerSelected {
+    opacity: 50%;
+}
+
+.nameColumn {
+  padding-top: 3px;
+  display: flex;
+  flex-direction: column;
+}
+
+.taskName {
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: black;
+  text-wrap: wrap;
+  overflow-wrap: break-word;
+  font-size: 20px;
+}
+
+.taskDescription {
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: black;
+  text-wrap: wrap;
+  overflow-wrap: break-word;
+}
+
+.editTaskBtn {
+  cursor: pointer;
+}
+
+.deleteTaskBtn {
+  cursor: pointer;
+}
