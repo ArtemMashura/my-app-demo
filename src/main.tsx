@@ -4,11 +4,14 @@ import './index.css'
 import App from './App.tsx'
 import { Provider } from 'react-redux'
 import { store } from './store/store.ts'
+import { DndContext } from "@dnd-kit/core";
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
-    <StrictMode>
-      <App />
-    </StrictMode>
+    <DndContext>
+      <StrictMode>
+        <App />
+      </StrictMode>
+    </DndContext>
   </Provider>
 )

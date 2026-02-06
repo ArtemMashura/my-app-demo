@@ -25,8 +25,6 @@ export default function CreateTaskModal({createTaskModalVisible, setCreateTaskMo
                 taskProgress: "ToDo",
                 orderInTable: toDoLastElementOrderInTable ? (Number(toDoLastElementOrderInTable) + 1) / 2 : 0.5
             })
-            console.log(typeof Number(toDoLastElementOrderInTable))
-            console.log(Number(toDoLastElementOrderInTable) + 1)
             pushNewTaskIntoToDoTasksArray(res.data.task)
             setIsLockedOut(false)
             closeModal()
