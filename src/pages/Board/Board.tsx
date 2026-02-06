@@ -67,7 +67,7 @@ export function BoardPage() {
     }
   }
 
-  const dragStartHandler = (e: DragEvent<HTMLDivElement>, board:Task[], item:Task) => {
+  const dragStartHandler = (board:Task[], item:Task) => {
     setCurrentBoard(board)
     setCurrentItem(item)
   }
@@ -83,68 +83,148 @@ export function BoardPage() {
   const dropHandler = (e: DragEvent<HTMLDivElement>,  board:Task[], item:Task) => {
     e.preventDefault()
     if (currentBoard && currentItem) {
-      const currentIndex = currentBoard.indexOf(currentItem)
-      currentBoard.splice(currentIndex, 1)
+      console.log(currentBoard)
+      console.log(board)
+      if (currentBoard === board) {
+        const tempBoard = [...board]
+        console.log(12312312132)
+        const itemIndex = tempBoard.indexOf(item)
 
-      
-      const dropIndex = board.indexOf(item)
-      let newVal: number = 0.5
+        let lowerNum: number
+        let higherNum: number
 
-      if (board.length === 1) {
-        if (dropIndex === 0) {
-          newVal = Number(board[1].orderInTable) / 2 
+        if (tempBoard[itemIndex]?.orderInTable) {
+          lowerNum = Number(tempBoard[itemIndex].orderInTable)
         }
-        if (dropIndex === 1) {
-          newVal = (Number(board[0].orderInTable) + 1) / 2
+        else { 
+          lowerNum = 0
+        }
+   
+        if (tempBoard[itemIndex+1]?.orderInTable) {
+          higherNum = Number(tempBoard[itemIndex+1].orderInTable)
+        }
+        else {
+          higherNum = 1
+        }
+        const newVal = (lowerNum + higherNum) / 2
+        
+        const tempItem = {
+          ...currentItem,
+          orderInTable: newVal.toString(),
+          taskProgress: item.taskProgress
+        }
+
+        tempBoard.splice(itemIndex+1, 0, tempItem)
+        
+        // const temp = board[itemIndex]
+        // board[itemIndex] = board[currentItemIndex]
+        // board[currentItemIndex] = temp
+
+        // [board[itemIndex], board[currentItemIndex]] = [board[currentItemIndex], board[itemIndex]];
+
+        const currentItemIndex = tempBoard.indexOf(currentItem)
+        tempBoard.splice(currentItemIndex, 1)
+
+        switch (item.taskProgress) {
+          case "ToDo":
+            setToDoTasks(tempBoard)
+            break
+          case "InProgress":
+            setInProgressTasks(tempBoard)
+            break
+          case "Done":
+            setDoneTasks(tempBoard) 
+            break
         }
       }
-      else { 
-        console.log("2 or more members")
-        newVal = (Number(board[dropIndex].orderInTable) + Number(board[dropIndex+1].orderInTable)) / 2
+      else {
+        const currentIndex = currentBoard.indexOf(currentItem)
+        const tempboard = currentBoard.toSpliced(currentIndex, 1)
+  
+        
+        const dropIndex = board.indexOf(item)
+        let newVal: number = 0.5
+  
+        if (board.length === 1) {
+          // if (dropIndex === 0) {
+          //   newVal = Number(board[0].orderInTable) / 2 
+          // }
+          if (dropIndex === 0) {
+            newVal = (Number(board[0].orderInTable) + 1) / 2
+          }
+        }
+        else { 
+          console.log("2 or more members")
+          let lowerNum: number
+          let higherNum: number
+  
+          if (board[dropIndex]?.orderInTable) {
+            lowerNum = Number(board[dropIndex].orderInTable)
+          }
+          else { 
+            lowerNum = 0
+          }
+   
+          if (board[dropIndex+1]?.orderInTable) {
+            higherNum = Number(board[dropIndex+1].orderInTable)
+          }
+          else {
+            higherNum = 1
+          }
+          newVal = (lowerNum + higherNum) / 2
+        }
+  
+        let currentItemOldBoard = currentItem.taskProgress
+  
+        // setCurrentItem({
+        //   ...currentItem,
+        //   orderInTable: newVal.toString(),
+        //   taskProgress: item.taskProgress
+        // })
+   
+        const tempItem = {
+          ...currentItem,
+          orderInTable: newVal.toString(),
+          taskProgress: item.taskProgress
+        }
+  
+        console.log(tempItem)
+  
+        board.splice(dropIndex + 1, 0, tempItem)
+  
+        if (currentItemOldBoard === item.taskProgress) {
+          console.log(tempboard)
+          console.log(board)
+        }
+        else {
+  
+          switch (currentItemOldBoard) {
+            case "ToDo":
+              setToDoTasks(tempboard)
+              break
+            case "InProgress":
+              setInProgressTasks(tempboard)
+              break
+            case "Done":
+              setDoneTasks(tempboard)
+              break
+          }
+    
+          switch (item.taskProgress) {
+            case "ToDo":
+              setToDoTasks(board)
+              break
+            case "InProgress":
+              setInProgressTasks(board)
+              break
+            case "Done":
+              setDoneTasks(board)
+              break
+          }
+        }
       }
 
-      let currentItemOldBoard = currentItem.taskProgress
-
-      // setCurrentItem({
-      //   ...currentItem,
-      //   orderInTable: newVal.toString(),
-      //   taskProgress: item.taskProgress
-      // })
- 
-      let tempItem = {
-        ...currentItem,
-        orderInTable: newVal.toString(),
-        taskProgress: item.taskProgress
       }
-
-      console.log(tempItem)
-
-      board.splice(dropIndex + 1, 0, tempItem)
-
-      switch (currentItemOldBoard) {
-        case "ToDo":
-          setToDoTasks(currentBoard)
-          break
-        case "InProgress":
-          setInProgressTasks(currentBoard)
-          break
-        case "Done":
-          setDoneTasks(currentBoard)
-          break
-      }
-
-      switch (item.taskProgress) {
-        case "ToDo":
-          setToDoTasks(board)
-          break
-        case "InProgress":
-          setInProgressTasks(board)
-          break
-        case "Done":
-          setDoneTasks(board)
-          break
-      }
-    }
     if (e.target instanceof Element) {
       if (e.target.className === 'taskContainer' || e.target.className === 'categoryContainer') {
         e.currentTarget.style.boxShadow = 'none'
@@ -205,98 +285,6 @@ export function BoardPage() {
 
     }
   }
-
-  // const [activeCardId, setActiveCardId] = useState<string | null>(null)
-  // const [activeCardIdCurrentTaskProgress, setActiveCardIdCurrentTaskProgress] = useState<"ToDo" | "InProgress" | "Done" | null>(null)
-
-  // const sensors = useSensors(
-  //   useSensor(MouseSensor),
-  //   useSensor(TouchSensor),
-  //   useSensor(KeyboardSensor),
-  // )
-
-  // const handleDragStart = (event: DragStartEvent) => {
-  //   setActiveCardId(event.active.id as string)
-  //   setActiveCardIdCurrentTaskProgress(event.active.data)
-  // }
-
-  // // const handleDragOver = (event: DragOverEvent) => {
-  // //   const { active, over } = event
-
-  // //   if (!over) {
-  // //     return
-  // //   }
-
-  // //   const activeItem = data.find(item => item.id === active.id)
-  // //   const overItem = data.find(item => item.id === over.id)
-
-  // //   if (!activeItem) {
-  // //     return
-  // //   }
-
-  // //   const activeColumn = activeItem.column
-  // //   const overColumn =
-  // //     overItem?.column || columns.find(col => col.id === over.id)?.id || columns[0]?.id
-
-  // //   if (activeColumn !== overColumn) {
-  // //     let newData = [...data]
-  // //     const activeIndex = newData.findIndex(item => item.id === active.id)
-  // //     const overIndex = newData.findIndex(item => item.id === over.id)
-
-  // //     newData[activeIndex].column = overColumn
-  // //     newData = arrayMove(newData, activeIndex, overIndex)
-
-  // //     onDataChange?.(newData)
-  // //   }
-
-  // //   onDragOver?.(event)
-  // // }
-
-  // const handleDragEnd = (event: DragEndEvent) => {
-  //   setActiveCardId(null)
-
-  //   onDragEnd?.(event)
-
-  //   const { active, over } = event
-
-  //   if (!over || active.id === over.id) {
-  //     return
-  //   }
-
-  //   let newData = [...data]
-
-  //   const oldIndex = newData.findIndex(item => item.id === active.id)
-  //   const newIndex = newData.findIndex(item => item.id === over.id)
-
-  //   // newData = arrayMove(newData, oldIndex, newIndex)
-
-  //   // onDataChange?.(newData)
-  // }
-
-  // const announcements: Announcements = {
-  //   onDragStart({ active }) {
-  //     const { name, column } = data.find(item => item.id === active.id) ?? {}
-
-  //     return `Picked up the card "${name}" from the "${column}" column`
-  //   },
-  //   onDragOver({ active, over }) {
-  //     const { name } = data.find(item => item.id === active.id) ?? {}
-  //     const newColumn = columns.find(column => column.id === over?.id)?.name
-
-  //     return `Dragged the card "${name}" over the "${newColumn}" column`
-  //   },
-  //   onDragEnd({ active, over }) {
-  //     const { name } = data.find(item => item.id === active.id) ?? {}
-  //     const newColumn = columns.find(column => column.id === over?.id)?.name
-
-  //     return `Dropped the card "${name}" into the "${newColumn}" column`
-  //   },
-  //   onDragCancel({ active }) {
-  //     const { name } = data.find(item => item.id === active.id) ?? {}
-
-  //     return `Cancelled dragging the card "${name}"`
-  //   },
-  // }
 
   const pushNewTaskIntoToDoTasksArray = (newTask: Task) => {
     setToDoTasks([
@@ -474,7 +462,7 @@ export function BoardPage() {
                         draggable={true}
                         onDragOver={(e) => dragOverHandler(e)}
                         onDragLeave={(e) => dragLeaveHandler(e)}
-                        onDragStart={(e) => dragStartHandler(e, toDoTasks, task)}
+                        onDragStart={() => dragStartHandler(toDoTasks, task)}
                         onDragEnd={(e) => dragEndHandler(e)}
                         onDrop={(e) => dropHandler(e, toDoTasks, task)}
                         >
@@ -522,7 +510,7 @@ export function BoardPage() {
                         draggable={true}
                         onDragOver={(e) => dragOverHandler(e)}
                         onDragLeave={(e) => dragLeaveHandler(e)}
-                        onDragStart={(e) => dragStartHandler(e, inProgressTasks, task)}
+                        onDragStart={() => dragStartHandler(inProgressTasks, task)}
                         onDragEnd={(e) => dragEndHandler(e)}
                         onDrop={(e) => dropHandler(e, inProgressTasks, task)}
                         >
@@ -566,7 +554,7 @@ export function BoardPage() {
                         draggable={true}
                         onDragOver={(e) => dragOverHandler(e)}
                         onDragLeave={(e) => dragLeaveHandler(e)}
-                        onDragStart={(e) => dragStartHandler(e, inProgressTasks, task)}
+                        onDragStart={() => dragStartHandler(inProgressTasks, task)}
                         onDragEnd={(e) => dragEndHandler(e)}
                         onDrop={(e) => dropHandler(e, inProgressTasks, task)}
                         >
