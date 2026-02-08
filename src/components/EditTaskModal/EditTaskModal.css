@@ -35,7 +35,7 @@ body.active-modal {
     min-width: 300px;
 }
 
-.closeModal, .closeModalLockedOut {
+.closeEditModal, .closeEditModalLockedOut {
     /* position: absolute;
     top: 10px;
     right: 10px; */
@@ -43,12 +43,13 @@ body.active-modal {
     flex-shrink: 1;
     background-color: red;
     border-radius: 5px;
-    align-items: center;
-    margin-top: 3px;
+    align-self:flex-end;
+    margin-top: 2px;
     cursor: pointer;
+    justify-self: flex-start;
 }
 
-.closeModalLockedOut {
+.closeEditModalLockedOut {
     opacity: 0.5;
     cursor: default;
 }
@@ -60,10 +61,10 @@ body.active-modal {
   max-width: 66%;
 }
 
-.header {
+.editTaskHeader {
     display: flex;
     flex-direction: row;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     justify-content: space-between;
 }
 
@@ -90,6 +91,7 @@ body.active-modal {
     text-align: left;
     font-size: 18px;
     margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 .applyChangesBtn, .applyChangesBtnLockedOut {

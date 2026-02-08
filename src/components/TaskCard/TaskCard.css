@@ -15,6 +15,14 @@
     opacity: 50%;
 }
 
+
+.taskControls {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+  padding-top: 8px;
+}
+
 .nameColumn {
   padding-top: 3px;
   display: flex;

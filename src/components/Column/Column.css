@@ -1,0 +1,56 @@
+.taskColumn {
+    min-height: 100%;
+}
+
+
+.categoryContainer {
+  /* padding-right: 90px; */
+  margin-top: 8px;
+  border-radius: 5px;
+  flex: 1 0 auto;
+  display: flex;
+  min-height: 100%;
+    border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  min-height: 105px;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-bottom: 5px;
+}
+
+
+.categoryName {
+  text-align: center;
+  flex-grow: 1;
+  color: black;
+  font-weight: 600;
+}
+
+.categoryControls {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+
+}
+
+.createTask {
+  background-color: rgb(199, 199, 199);
+  flex: 0 1 100px;
+  margin-top: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-radius: 5px;
+  justify-content: center;
+  display: flex;
+  cursor: pointer;
+}
+
+
+
+
+
+.createTaskBtn {
+  align-self: center;
+}
+

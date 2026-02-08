@@ -64,10 +64,10 @@ export default function EditTaskModal({editTaskModalVisible, setEditTaskModalVis
         <div className="modal">
             <div onClick={closeModal} className="overlay"></div>
             <div className="modal-content">
-                <div className="header">
+                <div className="editTaskHeader">
                     <text className="title">Edit task</text>
                     <div className={
-                        isLockedOut ? "closeModalLockedOut" : "closeModal"
+                        isLockedOut ? "closeEditModalLockedOut" : "closeEditModal"
                     } onClick={closeModal}>
                         <img className="close" width={20} height={20} src={'./src/assets/x-thin.svg'}></img>
                     </div>

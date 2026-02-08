@@ -64,8 +64,8 @@ export function TaskCard({task, setEditTaskModalTask, setIsEditTaskModalVisible,
                 <div className="nameColumn" key={task.id}>
                 <text className="taskName">{task.title}</text>
                 <text className="taskDescription">{task?.description}</text>
-                <text className="taskName">{task.orderInTable}</text>
-                <text className="taskName">{task.taskProgress}</text>
+                {/* <text className="taskName">{task.orderInTable}</text> */}
+                {/* <text className="taskName">{task.taskProgress}</text> */}
                 </div>
                 <div className='taskControls'>
                 <img className='editTaskBtn' width={25} height={25} src={'./src/assets/edit-tool-pencil.svg'} onClick={() => {

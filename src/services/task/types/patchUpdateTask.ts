@@ -1,12 +1,6 @@
 import type { Task, TRequest } from '../../types';
 
-type TPayload = {
-    title?: string
-    description?: string
-    boardId?: string
-    taskProgress?: "ToDo" | "InProgress" | "Done"
-    orderInTable?: number
-};
+type TPayload = Partial<Task>
 
 type TResponse = {
     message: string,

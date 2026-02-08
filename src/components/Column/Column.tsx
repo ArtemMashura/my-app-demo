@@ -1,15 +1,14 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { TaskCard } from "../TaskCard/TaskCard";
 import type { ModalProps } from "./ColumnProps";
-import { CSS } from "@dnd-kit/utilities";
+import "./Column.css"
+
 
 export function Column({tasks, setEditTaskModalTask, setIsEditTaskModalVisible, setDeleteTaskModalTaskID, setIsDeleteTaskModalVisible, setCreateTaskModalVisible, taskProgress} : ModalProps) {
     const {
         setNodeRef,
         attributes,
         listeners,
-        transform,
-        transition,
     } = useSortable({
         id: taskProgress,
         data: {
@@ -17,29 +16,30 @@ export function Column({tasks, setEditTaskModalTask, setIsEditTaskModalVisible, 
         },
       })
 
-    const style = {
-        transition,
-        transform: CSS.Transform.toString(transform)
-    }
+    // const style = {
+    //     transition,
+    //     transform: CSS.Transform.toString(transform)
+    // }
     
     return (
         <div className="taskColumn"
         ref={setNodeRef}
-        style={style}
+        // style={style}
         {...attributes}
         {...listeners}
         >
-            <text className='categoryName'>To Do</text>
+            <text className='categoryName'>{taskProgress}</text>
             <div className='categoryContainer'  
             
             >
-                {tasks.filter((task) => task.taskProgress === taskProgress).map((task) => (
+                {tasks.map((task) => (
                     <TaskCard
                     task={task}
                     setEditTaskModalTask={setEditTaskModalTask}
                     setIsEditTaskModalVisible={setIsEditTaskModalVisible}
                     setDeleteTaskModalTaskID={setDeleteTaskModalTaskID}
                     setIsDeleteTaskModalVisible={setIsDeleteTaskModalVisible}
+                    key={task.id}
                     />
                 ))}
 

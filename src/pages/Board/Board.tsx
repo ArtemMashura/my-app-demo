@@ -7,7 +7,7 @@ import CreateTaskModal from "../../components/CreateTaskModal/CreateTaskModal";
 import EditTaskModal from "../../components/EditTaskModal/EditTaskModal";
 import DeleteTaskModal from "../../components/DeleteTaskModal/DeleteTaskModal";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
-import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors, type DragOverEvent } from "@dnd-kit/core";
+import { DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors, type DragEndEvent, type DragOverEvent } from "@dnd-kit/core";
 import { Column } from "../../components/Column/Column";
 import { TaskService } from "../../services/task/task.service";
 
@@ -75,17 +75,10 @@ export function BoardPage() {
         const activeIndex = tasks.findIndex(t => t.id === activeId)
         const overIndex = tasks.findIndex(t => t.id === overId)
 
-        let req: Partial<Task>
-
-        req.
-
+        
         if (tasks[activeIndex].taskProgress !== tasks[overIndex].taskProgress) {
           tasks[activeIndex].taskProgress = tasks[overIndex].taskProgress
         }
-
-        TaskService.patchUpdateTask(tasks[activeIndex].id, {
-
-        })
 
         return arrayMove(tasks, activeIndex, overIndex)
       })
@@ -102,9 +95,107 @@ export function BoardPage() {
           tasks[activeIndex].taskProgress = overId
         }
 
+
         return arrayMove(tasks, activeIndex, activeIndex)
       })
     }
+  }
+
+  function onDragEnd(event: DragEndEvent) {
+    const { active } = event
+
+    if (!active.data.current) return
+
+    const activeId = active.id
+    // const overId = over.id
+
+    // console.log(active.data.current)
+    // console.log(over.data)
+
+    // if (activeId === overId) return
+
+    const isActiveATask = active.data.current.type === "Task"
+    // const isOverATask = over.data.current?.type === "Task"
+
+
+
+    if (!isActiveATask) return
+
+    const activeIndex = tasks.filter((t) => t.taskProgress === active.data.current?.task.taskProgress).findIndex(t => t.id === activeId)
+    // const overIndex = tasks.findIndex(t => t.id === overId)
+
+    if (isActiveATask 
+      // && isOverATask
+    ) 
+      {
+
+      let lowerVal: number
+      let higherVal: number
+      
+      // console.log(`overIndex ${overIndex}`)
+      const filteredTasks = tasks.filter((t) => t.taskProgress === active.data.current?.task.taskProgress)
+      // .filter((t) => t.taskProgress === tasks[activeIndex].taskProgress)
+
+
+      if (filteredTasks.length === 1) {
+        lowerVal = 0
+        higherVal = 1
+      }
+      else {
+        if (filteredTasks[activeIndex-1]?.orderInTable)
+          lowerVal = Number(filteredTasks[activeIndex-1]?.orderInTable)
+        else
+          lowerVal = 0
+  
+        if (filteredTasks[activeIndex+1]?.orderInTable)
+          higherVal = Number(filteredTasks[activeIndex+1]?.orderInTable)
+        else
+          higherVal = 1
+
+      }
+
+
+      // if (lowerVal.toString() === active.data.current?.task.orderInTable) {
+      //   console.log('dupe')
+      // }
+
+      const newOrderInTable = ((lowerVal + higherVal) / 2).toString()
+      
+      // tasks[activeIndex].orderInTable = newOrderInTable
+      setTasks(tasks => tasks.map((t) => 
+        t.id === active.data.current?.task.id
+          ?
+          {
+            ...t,
+            orderInTable: newOrderInTable
+          }
+          : t
+      ))
+
+      console.log(active.data.current.task.id)
+      console.log(active.data.current.task.taskProgress)
+      
+      TaskService.patchUpdateTask(active.data.current.task.id, {
+        taskProgress: active.data.current.task.taskProgress,
+        orderInTable: newOrderInTable
+      })
+    }
+
+    // const isOverAColumn = over.data.current?.type === "Column"
+
+    // if (isActiveATask && isOverAColumn) {
+    //   setTasks((tasks) => {
+
+    //     if (overId === "ToDo" || overId === "InProgress" || overId === "Done") {
+    //       tasks[activeIndex].taskProgress = overId
+    //     }
+
+    //     tasks[activeIndex].orderInTable = '0.5'
+
+    //     return arrayMove(tasks, activeIndex, activeIndex)
+    //   })
+    // }
+
   }
 
   const updateTaskInTasksArray = (newTask: Task) => {
@@ -137,7 +228,7 @@ export function BoardPage() {
           setBoard(data.data.board)
 
           if (data.data.board.tasks)
-          setTasks(data.data.board.tasks)
+          setTasks(data.data.board.tasks.sort((a,b) => Number(a.orderInTable) - Number(b.orderInTable)))
         }
         catch (e) {
           console.log(e)
@@ -151,7 +242,7 @@ export function BoardPage() {
   }, [id]);
 
   const handleSearch = () => {
-    if (searchTerm !== "") {
+    if (searchTerm !== "" && searchTerm !== id) {
       setIsInit(false)
       setBoard(undefined)
       navigate(`/board/${searchTerm}`)
@@ -188,6 +279,7 @@ export function BoardPage() {
             <DndContext
 
             onDragOver={onDragOver}
+            onDragEnd={onDragEnd}
             sensors={sensors}
             >
               <div className="mainContainer">
@@ -201,9 +293,11 @@ export function BoardPage() {
                   <SortableContext items={tasksIds}>
                     <div className='categories'>
                       <Column
-                        tasks={tasks}
+                        tasks={tasks.filter((task) => task.taskProgress === "ToDo")
+                          // .sort((a,b) => Number(a.orderInTable) - Number(b.orderInTable))
+                        }
                         setEditTaskModalTask={setEditTaskModalTask}
-                        setIsEditTaskModalVisible={setIsDeleteTaskModalVisible}
+                        setIsEditTaskModalVisible={setIsEditTaskModalVisible}
                         setDeleteTaskModalTaskID={setDeleteTaskModalTaskID}
                         setIsDeleteTaskModalVisible={setIsDeleteTaskModalVisible}
                         setCreateTaskModalVisible={setCreateTaskModalVisible}
@@ -211,9 +305,12 @@ export function BoardPage() {
                       />
 
                       <Column
-                        tasks={tasks}
+                        tasks={tasks.filter((task) => task.taskProgress === "InProgress")
+                          // .sort((a,b) => Number(a.orderInTable) - Number(b.orderInTable))
+
+                        }
                         setEditTaskModalTask={setEditTaskModalTask}
-                        setIsEditTaskModalVisible={setIsDeleteTaskModalVisible}
+                        setIsEditTaskModalVisible={setIsEditTaskModalVisible}
                         setDeleteTaskModalTaskID={setDeleteTaskModalTaskID}
                         setIsDeleteTaskModalVisible={setIsDeleteTaskModalVisible}
                         setCreateTaskModalVisible={setCreateTaskModalVisible}
@@ -221,9 +318,11 @@ export function BoardPage() {
                       />
 
                       <Column
-                        tasks={tasks}
+                        tasks={tasks.filter((task) => task.taskProgress === "Done")
+                          // .sort((a,b) => Number(a.orderInTable) - Number(b.orderInTable))
+                        }
                         setEditTaskModalTask={setEditTaskModalTask}
-                        setIsEditTaskModalVisible={setIsDeleteTaskModalVisible}
+                        setIsEditTaskModalVisible={setIsEditTaskModalVisible}
                         setDeleteTaskModalTaskID={setDeleteTaskModalTaskID}
                         setIsDeleteTaskModalVisible={setIsDeleteTaskModalVisible}
                         setCreateTaskModalVisible={setCreateTaskModalVisible}

@@ -14,16 +14,16 @@ export type TResponseData<Data> = {
 };
 
 export type Board = {
-    id: string,
-    name: string,
-    tasks?: Task[]
+  id: string,
+  name: string,
+  tasks?: Task[]
 }
 
 export type Task = {
-    id: string,
-    title: string,
-    description?: string,
-    boardId: string,
-    taskProgress: "ToDo" | "InProgress" | "Done"
-    orderInTable: string
+  id: string,
+  title: string,
+  description?: string,
+  boardId: string,
+  taskProgress: "ToDo" | "InProgress" | "Done"
+  orderInTable: string
 }
