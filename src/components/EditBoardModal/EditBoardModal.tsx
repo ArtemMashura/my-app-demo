@@ -5,6 +5,8 @@ import { BoardService } from "../../services/board/board.service";
 import { useDispatch } from "react-redux";
 import { changeBoard } from "../../store/Boards";
 
+import xThin from '/src/assets/x-thin.svg'
+
 export default function EditBoardModal({editBoardModalVisible, setEditBoardModalVisible, editBoardModalBoard} : ModalProps) {
     const dispatch = useDispatch()
 
@@ -70,7 +72,7 @@ export default function EditBoardModal({editBoardModalVisible, setEditBoardModal
                     <div className={
                         isLockedOut ? "closeModalLockedOut" : "closeModal"
                     } onClick={closeModal}>
-                        <img className="close" width={20} height={20} src={'./src/assets/x-thin.svg'}></img>
+                        <img className="close" width={20} height={20} src={xThin}></img>
                     </div>
                 </div>
                 <div className="content">

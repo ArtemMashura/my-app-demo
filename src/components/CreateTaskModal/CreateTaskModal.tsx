@@ -3,6 +3,8 @@ import "./CreateTaskModal.css";
 import type { ModalProps } from "./CreateTaskModalProps";
 import { TaskService } from "../../services/task/task.service";
 
+import xThin from '/src/assets/x-thin.svg'
+
 export default function CreateTaskModal({createTaskModalVisible, setCreateTaskModalVisible, boardUUID, toDoLastElementOrderInTable, pushNewTaskIntoToDoTasksArray} : ModalProps) {
     const [taskName, setTaskName] = useState('')
     const [taskDescription, setTaskDescription] = useState('')
@@ -49,7 +51,7 @@ export default function CreateTaskModal({createTaskModalVisible, setCreateTaskMo
                     <div className={
                         isLockedOut ? "closeModalLockedOut" : "closeModal"
                     } onClick={closeModal}>
-                        <img className="close" width={20} height={20} src={'./src/assets/x-thin.svg'}></img>
+                        <img className="close" width={20} height={20} src={xThin}></img>
                     </div>
                 </div>
                 <div className="content">

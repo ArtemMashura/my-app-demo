@@ -3,6 +3,8 @@ import "./EditTaskModal.css";
 import type { ModalProps } from "./EditTaskModalProps";
 import { TaskService } from "../../services/task/task.service";
 
+import xThin from '/src/assets/x-thin.svg'
+
 export default function EditTaskModal({editTaskModalVisible, setEditTaskModalVisible, editTaskModalTask, updateTaskInTasksArray} : ModalProps) {
     const [taskName, setTaskName] = useState(editTaskModalTask?.title)
     const [taskDescription, setTaskDescription] = useState(editTaskModalTask?.description)
@@ -69,7 +71,7 @@ export default function EditTaskModal({editTaskModalVisible, setEditTaskModalVis
                     <div className={
                         isLockedOut ? "closeEditModalLockedOut" : "closeEditModal"
                     } onClick={closeModal}>
-                        <img className="close" width={20} height={20} src={'./src/assets/x-thin.svg'}></img>
+                        <img className="close" width={20} height={20} src={xThin}></img>
                     </div>
                 </div>
                 <div className="content">

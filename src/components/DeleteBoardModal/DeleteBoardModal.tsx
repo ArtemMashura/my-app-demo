@@ -5,6 +5,8 @@ import { BoardService } from "../../services/board/board.service";
 import { useDispatch } from "react-redux";
 import { removeBoard } from "../../store/Boards";
 
+import xThin from '/src/assets/x-thin.svg'
+
 export default function DeleteBoardModal({isDeleteBoardModalVisible, setIsDeleteBoardModalVisible, deleteBoardModalBoardID} : ModalProps) {
     const dispatch = useDispatch()
 
@@ -52,7 +54,7 @@ export default function DeleteBoardModal({isDeleteBoardModalVisible, setIsDelete
                     <div className={
                         isLockedOut ? "closeModalLockedOut" : "closeModal"
                     } onClick={closeModal}>
-                        <img className="close" width={20} height={20} src={'./src/assets/x-thin.svg'}></img>
+                        <img className="close" width={20} height={20} src={xThin}></img>
                     </div>
                 </div>
                 <div className="content">

@@ -3,6 +3,8 @@ import "./DeleteTaskModal.css";
 import type { ModalProps } from "./DeleteTaskModalProps";
 import { TaskService } from "../../services/task/task.service";
 
+import xThin from '/src/assets/x-thin.svg'
+
 export default function DeleteTaskModal({isDeleteTaskModalVisible, setIsDeleteTaskModalVisible, deleteTaskModalTaskID, deleteTaskInTasksArray} : ModalProps) {
 
     const [isLockedOut, setIsLockedOut] = useState(false)
@@ -49,7 +51,7 @@ export default function DeleteTaskModal({isDeleteTaskModalVisible, setIsDeleteTa
                     <div className={
                         isLockedOut ? "closeModalLockedOut" : "closeModal"
                     } onClick={closeModal}>
-                        <img className="close" width={20} height={20} src={'./src/assets/x-thin.svg'}></img>
+                        <img className="close" width={20} height={20} src={xThin}></img>
                     </div>
                 </div>
                 <div className="content">

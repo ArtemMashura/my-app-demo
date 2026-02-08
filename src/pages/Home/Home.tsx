@@ -10,6 +10,9 @@ import EditBoardModal from '../../components/EditBoardModal/EditBoardModal';
 import DeleteBoardModal from '../../components/DeleteBoardModal/DeleteBoardModal';
 import { Link } from 'react-router-dom';
 
+import editPencil from '/src/assets/edit-tool-pencil.svg'
+import deleteButton from '/src/assets/delete-button.svg'
+
 export function Home() {
     const boards = useSelector((state: RootState) => state.board.boards)
   // const [filteredBoards, setFilteredBoards] = useState<Array<Board>>([]);
@@ -76,13 +79,13 @@ export function Home() {
                 <div className='boardContainer' key={boardToRender.id}>
                     <text className='tableName'>{boardToRender.name}</text>
                     <div className='controls'>
-                      <img className='editBtn' width={25} height={25} src={'./src/assets/edit-tool-pencil.svg'} onClick={(event) => {
+                      <img className='editBtn' width={25} height={25} src={editPencil} onClick={(event) => {
                         event.preventDefault()
                         setEditBoardModalBoard(boardToRender)
                         setIsEditBoardModalVisible(true)
                       }}></img>
                       <p></p>
-                      <img className='deleteBtn' width={25} height={25} src={'./src/assets/delete-button.svg'} onClick={(event) => {
+                      <img className='deleteBtn' width={25} height={25} src={deleteButton} onClick={(event) => {
                         event.preventDefault()
                         setDeleteBoardModalBoardID(boardToRender.id)
                         setIsDeleteBoardModalVisible(true)
@@ -94,11 +97,6 @@ export function Home() {
             ))}
             <div onClick={() => setCreateBoardModalVisible(true)} className='createBoardContainer'>
               <text className='createTableName'>Create new board</text>
-              {/* <div className='controls'>
-                <img width={25} height={25} src={'./src/assets/edit-tool-pencil.svg'}></img>
-                <p></p>
-                <img width={25} height={25} src={'./src/assets/delete-button.svg'}></img>
-              </div> */}
             </div>
           </div>
         </>

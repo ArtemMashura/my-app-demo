@@ -3,6 +3,7 @@ import { TaskCard } from "../TaskCard/TaskCard";
 import type { ModalProps } from "./ColumnProps";
 import "./Column.css"
 
+import plusThin from '/src/assets/plus-thin.svg'
 
 export function Column({tasks, setEditTaskModalTask, setIsEditTaskModalVisible, setDeleteTaskModalTaskID, setIsDeleteTaskModalVisible, setCreateTaskModalVisible, taskProgress} : ModalProps) {
     const {
@@ -44,7 +45,7 @@ export function Column({tasks, setEditTaskModalTask, setIsEditTaskModalVisible, 
                 ))}
 
                 {taskProgress === 'ToDo' &&<div className="createTask" onClick={() => setCreateTaskModalVisible(true)}>
-                 <img className='createTaskBtn' width={50} height={50} src={'./src/assets/plus-thin.svg'}></img>
+                 <img className='createTaskBtn' width={50} height={50} src={plusThin}></img>
                 </div>}
             </div>
             
